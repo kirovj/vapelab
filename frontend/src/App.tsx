@@ -15,6 +15,7 @@ import Search from './pages/Search';
 import Dashboard from './pages/admin/Dashboard';
 import BrandManage from './pages/admin/BrandManage';
 import JuiceManage from './pages/admin/JuiceManage';
+import UserManage from './pages/admin/UserManage';
 
 function App() {
   return (
@@ -36,6 +37,7 @@ function App() {
             <Route index element={<Dashboard />} />
             <Route path="brands" element={<BrandManage />} />
             <Route path="juices" element={<JuiceManage />} />
+            <Route path="users" element={<UserManage />} />
           </Route>
         </Routes>
       </BrowserRouter>

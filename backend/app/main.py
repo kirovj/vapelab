@@ -5,7 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from app.config import settings
 from app.database import init_db
-from app.routers import auth, tags, admin_tags, brands, admin_brands, upload, juices, admin_juices, reviews, users
+from app.routers import auth, tags, admin_tags, brands, admin_brands, upload, juices, admin_juices, reviews, users, admin_users, submissions, admin_submissions
 
 
 @asynccontextmanager
@@ -37,6 +37,9 @@ app.include_router(juices.router)
 app.include_router(admin_juices.router)
 app.include_router(reviews.router)
 app.include_router(users.router)
+app.include_router(admin_users.router)
+app.include_router(submissions.router)
+app.include_router(admin_submissions.router)
 
 
 @app.get("/api/health")

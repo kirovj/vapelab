@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import { Spin, Descriptions, Rate, Tag, Image, Empty } from 'antd';
 import { getJuice } from '../api/juice';
 import type { JuiceItem } from '../api/juice';
+import ReviewList from '../components/ReviewList';
 
 export default function JuiceDetail() {
   const { id } = useParams<{ id: string }>();
@@ -46,7 +47,7 @@ export default function JuiceDetail() {
         <Descriptions.Item label="参考价格">{juice.price_range || '-'}</Descriptions.Item>
       </Descriptions>
       {juice.description && <p className="mt-4 text-gray-600">{juice.description}</p>}
-      {/* 评论区留空，Task 14 补充 */}
+      <ReviewList juiceId={juice.id} />
     </div>
   );
 }
