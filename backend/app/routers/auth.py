@@ -1,6 +1,8 @@
 """认证路由：注册、登录"""
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlmodel import Session, select
+from slowapi import Limiter
+from slowapi.util import get_remote_address
 from app.database import get_session
 from app.models.user import User
 from app.schemas.auth import RegisterRequest, LoginRequest
@@ -8,10 +10,12 @@ from app.auth.password import hash_password, verify_password
 from app.auth.jwt import create_access_token, create_refresh_token
 
 router = APIRouter(prefix="/api/auth", tags=["认证"])
+limiter = Limiter(key_func=get_remote_address)
 
 
 @router.post("/register")
-def register(req: RegisterRequest, session: Session = Depends(get_session)) -> dict:
+@limiter.limit("30/minute")
+def register(req: RegisterRequest, request: Request, session: Session = Depends(get_session)) -> dict:
     """用户注册"""
     existing = session.exec(
         select(User).where((User.username == req.username) | (User.email == req.email))
@@ -29,7 +33,8 @@ def register(req: RegisterRequest, session: Session = Depends(get_session)) -> d
 
 
 @router.post("/login")
-def login(req: LoginRequest, session: Session = Depends(get_session)) -> dict:
+@limiter.limit("30/minute")
+def login(req: LoginRequest, request: Request, session: Session = Depends(get_session)) -> dict:
     """用户登录"""
     user = session.exec(
         select(User).where(

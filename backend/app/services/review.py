@@ -1,4 +1,5 @@
 """评分评论业务逻辑"""
+import bleach
 from sqlmodel import Session, select, func
 from app.models.review import Review
 from app.models.juice import Juice
@@ -13,6 +14,8 @@ def create_review(session: Session, user_id: int, data) -> Review:
     if existing:
         raise ValueError("您已评论过该烟油")
 
+    if data.comment:
+        data.comment = bleach.clean(data.comment, tags=[], strip=True)
     review = Review(juice_id=data.juice_id, user_id=user_id, rating=data.rating, comment=data.comment)
     session.add(review)
     _update_juice_stats(session, data.juice_id)
@@ -46,6 +49,8 @@ def get_reviews_by_juice(session: Session, juice_id: int, page: int = 1, size: i
 def update_review(session: Session, review: Review, data) -> Review:
     """更新评论（仅作者可操作）"""
     update_data = data.model_dump(exclude_unset=True)
+    if "comment" in update_data and update_data["comment"]:
+        update_data["comment"] = bleach.clean(update_data["comment"], tags=[], strip=True)
     for key, value in update_data.items():
         setattr(review, key, value)
     session.add(review)

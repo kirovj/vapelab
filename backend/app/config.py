@@ -18,6 +18,9 @@ class Settings(BaseSettings):
     UPLOAD_DIR: str = str(Path(__file__).parent.parent / "static" / "uploads")
     MAX_UPLOAD_SIZE: int = 5 * 1024 * 1024  # 5MB
 
+    # CORS
+    CORS_ORIGINS: list[str] = ["http://localhost:5173"]
+
     # 应用
     APP_NAME: str = "雾室 - vapelab"
     DEBUG: bool = True

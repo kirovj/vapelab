@@ -12,6 +12,8 @@ import JuiceList from './pages/JuiceList';
 import JuiceDetail from './pages/JuiceDetail';
 import Profile from './pages/Profile';
 import Search from './pages/Search';
+import Submit from './pages/Submit';
+import SubmissionManage from './pages/admin/SubmissionManage';
 import Dashboard from './pages/admin/Dashboard';
 import BrandManage from './pages/admin/BrandManage';
 import JuiceManage from './pages/admin/JuiceManage';
@@ -32,12 +34,14 @@ function App() {
             <Route path="/brands/:id" element={<BrandDetail />} />
             <Route path="/juices" element={<JuiceList />} />
             <Route path="/juices/:id" element={<JuiceDetail />} />
+            <Route path="/submit" element={<Submit />} />
           </Route>
           <Route path="/admin" element={<AdminLayout />}>
             <Route index element={<Dashboard />} />
             <Route path="brands" element={<BrandManage />} />
             <Route path="juices" element={<JuiceManage />} />
             <Route path="users" element={<UserManage />} />
+            <Route path="submissions" element={<SubmissionManage />} />
           </Route>
         </Routes>
       </BrowserRouter>

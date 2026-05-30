@@ -2,10 +2,15 @@
 from sqlmodel import Session, select, func
 from app.models.brand import Brand
 from app.models.juice import Juice
+from app.utils.cache import brand_cache
 
 
 def get_brands(session: Session, page: int = 1, size: int = 20, country: str | None = None) -> dict:
-    """获取品牌列表，支持分页和按国家筛选"""
+    """获取品牌列表，支持分页和按国家筛选（无筛选时使用缓存）"""
+    cache_key = f"brands:{page}:{size}:{country or 'all'}"
+    if cache_key in brand_cache:
+        return brand_cache[cache_key]
+
     query = select(Brand)
     count_query = select(func.count(Brand.id))
     if country:
@@ -22,7 +27,14 @@ def get_brands(session: Session, page: int = 1, size: int = 20, country: str | N
             "juice_count": juice_count,
             "created_at": b.created_at.isoformat() if b.created_at else "",
         })
-    return {"items": items, "total": total, "page": page, "size": size}
+    result = {"items": items, "total": total, "page": page, "size": size}
+    brand_cache[cache_key] = result
+    return result
+
+
+def _invalidate_brand_cache() -> None:
+    """清除品牌缓存"""
+    brand_cache.clear()
 
 
 def get_brand_by_id(session: Session, brand_id: int) -> Brand | None:
@@ -36,6 +48,7 @@ def create_brand(session: Session, data) -> Brand:
     session.add(brand)
     session.commit()
     session.refresh(brand)
+    _invalidate_brand_cache()
     return brand
 
 
@@ -47,6 +60,7 @@ def update_brand(session: Session, brand: Brand, data) -> Brand:
     session.add(brand)
     session.commit()
     session.refresh(brand)
+    _invalidate_brand_cache()
     return brand
 
 
@@ -57,3 +71,4 @@ def delete_brand(session: Session, brand: Brand) -> None:
         session.delete(juice)
     session.delete(brand)
     session.commit()
+    _invalidate_brand_cache()

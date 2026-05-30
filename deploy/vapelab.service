@@ -1,0 +1,20 @@
+# 雾室 vapelab systemd 服务
+# 安装: sudo cp deploy/vapelab.service /etc/systemd/system/
+# 启用: sudo systemctl enable vapelab
+# 启动: sudo systemctl start vapelab
+
+[Unit]
+Description=雾室 vapelab FastAPI 服务
+After=network.target
+
+[Service]
+Type=simple
+User=www-data
+WorkingDirectory=/var/www/vapelab/backend
+ExecStart=/var/www/vapelab/.venv/bin/uvicorn app.main:app --host 127.0.0.1 --port 8000
+Restart=always
+RestartSec=5
+Environment=PYTHONUNBUFFERED=1
+
+[Install]
+WantedBy=multi-user.target

@@ -1,8 +1,12 @@
 """FastAPI 应用入口"""
+import os
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
+from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi.errors import RateLimitExceeded
+from slowapi.util import get_remote_address
 from app.config import settings
 from app.database import init_db
 from app.routers import auth, tags, admin_tags, brands, admin_brands, upload, juices, admin_juices, reviews, users, admin_users, submissions, admin_submissions
@@ -17,9 +21,13 @@ async def lifespan(app: FastAPI):  # pyright: ignore[reportUnusedParameter]
 
 app = FastAPI(title=settings.APP_NAME, lifespan=lifespan)
 
+limiter = Limiter(key_func=get_remote_address)
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],
+    allow_origins=settings.CORS_ORIGINS,
     allow_credentials=True,
     allow_methods=["GET", "POST"],
     allow_headers=["*"],
