@@ -2,9 +2,10 @@
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from app.config import settings
 from app.database import init_db
-from app.routers import auth, tags, admin_tags, brands, admin_brands
+from app.routers import auth, tags, admin_tags, brands, admin_brands, upload, juices, admin_juices
 
 
 @asynccontextmanager
@@ -24,11 +25,16 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.mount("/static", StaticFiles(directory="static"), name="static")
+
 app.include_router(auth.router)
 app.include_router(tags.router)
 app.include_router(admin_tags.router)
 app.include_router(brands.router)
 app.include_router(admin_brands.router)
+app.include_router(upload.router)
+app.include_router(juices.router)
+app.include_router(admin_juices.router)
 
 
 @app.get("/api/health")
