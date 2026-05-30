@@ -40,3 +40,10 @@ def test_create_flavor_tag() -> None:
     """测试创建标签模型"""
     tag = FlavorTag(name="清新")
     assert tag.name == "清新"
+
+
+def test_create_juice_flavor_tag() -> None:
+    """测试创建烟油-标签关联"""
+    link = JuiceFlavorTag(juice_id=1, tag_id=1)
+    assert link.juice_id == 1
+    assert link.tag_id == 1

@@ -3,10 +3,12 @@ from datetime import datetime, timezone
 from enum import Enum
 from typing import TYPE_CHECKING
 from sqlmodel import SQLModel, Field, Relationship, Column, JSON
+from app.models.flavor_tag import JuiceFlavorTag
 
 if TYPE_CHECKING:
     from app.models.brand import Brand
     from app.models.review import Review
+    from app.models.flavor_tag import FlavorTag
 
 
 class JuiceStatus(str, Enum):
@@ -36,3 +38,4 @@ class Juice(SQLModel, table=True):
 
     brand: "Brand" = Relationship(back_populates="juices")
     reviews: list["Review"] = Relationship(back_populates="juice")
+    flavor_tags: list["FlavorTag"] = Relationship(back_populates="juices", link_model=JuiceFlavorTag)
