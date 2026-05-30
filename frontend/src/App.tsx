@@ -10,6 +10,8 @@ import BrandList from './pages/BrandList';
 import BrandDetail from './pages/BrandDetail';
 import JuiceList from './pages/JuiceList';
 import JuiceDetail from './pages/JuiceDetail';
+import Profile from './pages/Profile';
+import Search from './pages/Search';
 import Dashboard from './pages/admin/Dashboard';
 import BrandManage from './pages/admin/BrandManage';
 import JuiceManage from './pages/admin/JuiceManage';
@@ -22,6 +24,8 @@ function App() {
           <Route element={<PublicLayout />}>
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/search" element={<Search />} />
+            <Route path="/me" element={<Profile />} />
             <Route path="/register" element={<Register />} />
             <Route path="/brands" element={<BrandList />} />
             <Route path="/brands/:id" element={<BrandDetail />} />
