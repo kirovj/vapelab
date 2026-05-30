@@ -1,5 +1,6 @@
 """应用配置管理"""
 from pathlib import Path
+from pydantic import ConfigDict
 from pydantic_settings import BaseSettings
 
 
@@ -21,8 +22,7 @@ class Settings(BaseSettings):
     APP_NAME: str = "雾室 - vapelab"
     DEBUG: bool = True
 
-    class Config:
-        env_file = ".env"
+    model_config = ConfigDict(env_file=".env")
 
 
 settings = Settings()
